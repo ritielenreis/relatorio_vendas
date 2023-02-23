@@ -1,6 +1,10 @@
-create schema loja;
+	# Crie, no seu banco de dados, a tabela abaixo, insira os valores apresentados e em 
+	# seguida escreva as consultas solicitadas abaixo.
+	# OBS: Os valores em branco devem ser nulos no banco de dados.
 
-create table controle_caixa(
+create schema vendas;
+
+create table controle_vendas(
 	ID_NF int not null,
 	ID_ITEM int not null,
 	COD_PROD int not null,
@@ -8,15 +12,17 @@ create table controle_caixa(
 	QUANTIDADE int not null,
 	DESCONTO int null
 	);
+	
+select * from controle_vendas;
 
-insert into controle_caixa values
+insert into controle_vendas values
 	(1, 1, 1, 25.00, 10, 5),
 	(1, 2, 2, 13.50, 3, null),
 	(1, 3, 3, 15.00, 2, null),
 	(1, 4, 4, 10.00, 1, null),
 	(1, 5, 5, 30.00, 1, null);
 
-insert into controle_caixa values
+insert into controle_vendas values
 	(2, 1, 3, 15.00, 4, null),
 	(2, 2, 4, 10.00, 5, null),
 	(2, 3, 5, 30.00, 7, null),
@@ -25,7 +31,7 @@ insert into controle_caixa values
 	(3, 3, 5, 30.00, 5, null),
 	(3, 4, 2, 13.50, 7, null);
 
-insert into controle_caixa values
+insert into controle_vendas values
 	(4, 1, 5, 30.00, 10, 15),
 	(4, 2, 4, 10.00, 12, 5),
 	(4, 3, 1, 25.00, 13, 5),
@@ -33,7 +39,7 @@ insert into controle_caixa values
 	(5, 1, 3, 15.00, 3, null),
 	(5, 2, 5, 30.00, 6, null);
 
-insert into controle_caixa values
+insert into controle_vendas values
 	(6, 1, 1, 25.00, 22, 15),
 	(6, 2, 3, 15.00, 25, 20),
 	(7, 1, 1, 25.00, 10, 3),
@@ -41,31 +47,34 @@ insert into controle_caixa values
 	(7, 3, 3, 15.00, 10, 4),
 	(7, 4, 5, 30.00, 10, 1);
 
-select * from controle_caixa;
+select * from controle_vendas;
+    
+
+	#Exercício 1 a. Pesquise os itens que foram vendidos sem desconto. As colunas presentes no
+	#resultado da consulta são: ID_NF, ID_ITEM, COD_PROD E VALOR_UNIT
+select ID_NF,
+       ID_ITEM,
+       COD_PROD,
+       VALOR_UNIT
+from controle_vendas
+where DESCONTO is null;
 
 
-	# Exercício 1 a. Pesquise os itens que foram vendidos sem desconto. As colunas presentes no
-	# resultado da consulta são: ID_NF, ID_ITEM, COD_PROD E VALOR_UNIT
-select ID_NF, ID_ITEM, COD_PROD, VALOR_UNIT
-from controle_caixa
-where DESCONTO = 0;
-
-
-	# Exercício 1 b. Pesquise os itens que foram vendidos com desconto. As colunas presentes no
-	# resultado da consulta são: ID_NF, ID_ITEM, COD_PROD, VALOR_UNIT E O VALOR VENDIDO.
-	# OBS: O valor vendido é igual ao VALOR_UNIT -(VALOR_UNIT*(DESCONTO/100)).
+	#Exercício 1 b. Pesquise os itens que foram vendidos com desconto. As colunas presentes no
+	#resultado da consulta são: ID_NF, ID_ITEM, COD_PROD, VALOR_UNIT E O VALOR VENDIDO.
+	#OBS: O valor vendido é igual ao VALOR_UNIT -(VALOR_UNIT*(DESCONTO/100)).
 select  ID_NF, 
-	      ID_ITEM, 
-	      COD_PROD, 
-	      VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
-from controle_caixa
+	ID_ITEM, 
+	COD_PROD, 
+	VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
+from controle_vendas
 where DESCONTO > 0;
 
 
 	# Exercício 1 c.Altere o valor do desconto (para zero) de todos os registros onde este campo é nulo.
 set SQL_SAFE_UPDATES = 0;
 
-update controle_caixa set DESCONTO = 0
+update controle_vendas set DESCONTO = 0
 where DESCONTO is null;
 
 set SQL_SAFE_UPDATES = 1;
@@ -76,13 +85,13 @@ set SQL_SAFE_UPDATES = 1;
 	# OBS: O VALOR_TOTAL é obtido pela fórmula: QUANTIDADE * VALOR_UNIT.
 	# O VALOR_VENDIDO é igual a VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100))
 select  ID_NF, 
-	      ID_ITEM, 
-	      COD_PROD, 
+	ID_ITEM, 
+	COD_PROD, 
         VALOR_UNIT,
         QUANTIDADE * VALOR_UNIT AS VALOR_TOTAL,
         DESCONTO,
-	      VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
-from controle_caixa
+	VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
+from controle_vendas
 where QUANTIDADE > 0;
 
 	# Exercício 1 e.Pesquise o valor total das NF e ordene o resultado do maior valor para o menor. As 
@@ -90,8 +99,8 @@ where QUANTIDADE > 0;
 	# VALOR_TOTAL é obtido pela fórmula: ∑ QUANTIDADE * VALOR_UNIT. Agrupe o 
 	# resultado da consulta por ID_NF.
 select  ID_NF,
-	      QUANTIDADE * VALOR_UNIT AS VALOR_TOTAL
-from controle_caixa
+	QUANTIDADE * VALOR_UNIT AS VALOR_TOTAL
+from controle_vendas
 order by ID_NF desc, VALOR_TOTAL desc;
 
 	# Exercício 1 f.Pesquise o valor vendido das NF e ordene o resultado do maior valor para o menor. As 
@@ -100,42 +109,42 @@ order by ID_NF desc, VALOR_TOTAL desc;
 	# VALOR_VENDIDO é igual a ∑ VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)). Agrupe 
 	# o resultado da consulta por ID_NF
  select  ID_NF,
-	       VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
-from controle_caixa
+	 VALOR_UNIT - (VALOR_UNIT*(DESCONTO/100)) AS VALOR_VENDIDO
+from controle_vendas
 order by ID_NF desc, VALOR_VENDIDO desc;   
 
 	# Exercício 1 g.Consulte o produto que mais vendeu no geral. As colunas presentes no resultado da 
 	# consulta são: COD_PROD, QUANTIDADE. Agrupe o resultado da consulta por COD_PROD.
 select  COD_PROD,
-		    QUANTIDADE
-from controle_caixa
+	QUANTIDADE
+from controle_vendas
 order by COD_PROD desc, QUANTIDADE desc; 
 
 	# Exercício 1 h.Consulte as NF que foram vendidas mais de 10 unidades de pelo menos um produto. 
 	# As colunas presentes no resultado da consulta são: ID_NF, COD_PROD, QUANTIDADE.
 	# Agrupe o resultado da consulta por ID_NF, COD_PROD.
 select ID_NF,
-	     COD_PROD,
+       COD_PROD,
        QUANTIDADE
-from controle_caixa
+from controle_vendas
 where QUANTIDADE > 10
 order by ID_NF, COD_PROD;
 
 	# Exercício 1 i.Pesquise o valor total das NF, onde esse valor seja maior que 500, e ordene o 
 	# resultado do maior valor para o menor. As colunas presentes no resultado da consulta 
 	# são: ID_NF, VALOR_TOT. OBS: O VALOR_TOTAL é obtido pela fórmula: ∑ QUANTIDADE * VALOR_UNIT.
-  # Agrupe o resultado da consulta por ID_NF
+   	# Agrupe o resultado da consulta por ID_NF
 select ID_NF,
-	   QUANTIDADE * VALOR_UNIT as VALOR_TOT
-from controle_caixa
+       QUANTIDADE * VALOR_UNIT as VALOR_TOT
+from controle_vendas
 where (QUANTIDADE * VALOR_UNIT) > 500
 order by ID_NF;
 
 	# Exercício 1 j.Qual o valor médio dos descontos dados por produto. As colunas presentes no 
-  # resultado da consulta são: COD_PROD, MEDIA. Agrupe o resultado da consulta por COD_PROD.
+        # resultado da consulta são: COD_PROD, MEDIA. Agrupe o resultado da consulta por COD_PROD.
 select COD_PROD,
-	   avg (DESCONTO) as MEDIA
-from controle_caixa
+       avg (DESCONTO) as MEDIA
+from controle_vendas
 group by COD_PROD;
 
 
@@ -143,25 +152,27 @@ group by COD_PROD;
 	# presentes no resultado da consulta são: COD_PROD, MENOR, MAIOR, MEDIA. Agrupe 
 	# o resultado da consulta por COD_PROD.
 select COD_PROD,
-	   min(DESCONTO) as MENOR,
+       min(DESCONTO) as MENOR,
        max(DESCONTO) as MAIOR,
-	   avg (DESCONTO) as MEDIA
-from controle_caixa
+       avg (DESCONTO) as MEDIA
+from controle_vendas
 group by COD_PROD;    
 
 
-  # Exercício 1 l.Quais as NF que possuem mais de 3 itens vendidos. As colunas presentes no resultado 
-  # da consulta são: ID_NF, QTD_ITENS. OBS:: NÃO ESTÁ RELACIONADO A QUANTIDADE 
-  # VENDIDA DO ITEM E SIM A QUANTIDADE DE ITENS POR NOTA FISCAL. Agrupe o 
-  # resultado da consulta por ID_NF.
+# Exercício 1 l.Quais as NF que possuem mais de 3 itens vendidos. As colunas presentes no resultado 
+# da consulta são: ID_NF, QTD_ITENS. OBS:: NÃO ESTÁ RELACIONADO A QUANTIDADE 
+# VENDIDA DO ITEM E SIM A QUANTIDADE DE ITENS POR NOTA FISCAL. Agrupe o 
+# resultado da consulta por ID_NF.
 
 select ID_NF,
-	   sum(QUANTIDADE) as QTD_ITENS
-from controle_caixa
+       sum(QUANTIDADE) as QTD_ITENS
+from controle_vendas
 group by ID_NF;
 
-select * from controle_caixa
+select * from controle_vendas
 order by ID_NF;
+
+
 
 
 
