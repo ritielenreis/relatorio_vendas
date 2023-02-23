@@ -159,15 +159,15 @@ from controle_vendas
 group by COD_PROD;    
 
 
-# Exercício 1 l.Quais as NF que possuem mais de 3 itens vendidos. As colunas presentes no resultado 
-# da consulta são: ID_NF, QTD_ITENS. OBS:: NÃO ESTÁ RELACIONADO A QUANTIDADE 
-# VENDIDA DO ITEM E SIM A QUANTIDADE DE ITENS POR NOTA FISCAL. Agrupe o 
-# resultado da consulta por ID_NF.
-
+	# Exercício 1 l.Quais as NF que possuem mais de 3 itens vendidos. As colunas presentes no resultado 
+	# da consulta são: ID_NF, QTD_ITENS. OBS:: NÃO ESTÁ RELACIONADO A QUANTIDADE 
+	# VENDIDA DO ITEM E SIM A QUANTIDADE DE ITENS POR NOTA FISCAL. Agrupe o 
+	# resultado da consulta por ID_NF.
 select ID_NF,
        sum(QUANTIDADE) as QTD_ITENS
 from controle_vendas
 group by ID_NF;
+
 
 select * from controle_vendas
 order by ID_NF;
